@@ -26,6 +26,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Computer Network Website Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./style.css">
     </head>
+    <body>
+        <button id="theme-toggle" class="dark-mode-btn">
+            Toggle Dark Mode
+        </button>
+        <script>
+        document.getElementById("theme-toggle").addEventListener("click", function() {
+            document.body.classList.toggle("dark-mode");
+        });
+        </script>
+    </body>
 </html>
