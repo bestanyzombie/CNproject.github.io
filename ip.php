@@ -1,10 +1,13 @@
 <?php
     if($_SERVER["REQUEST_METHOD"] == "GET") {
         $ipAddress = null;
+        # For client device's address
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+        # For proxy device
         } elseif (!empty($_SERVER['HTTPX_FORWARDED_FOR'])) {
             $ipAddress = $_SERVER['HTTPX_FORWARDED_FOR'];
+        # For remote address
         } else {
             $ipAddress = $_SERVER['REMOTE_ADDR'];
         }
@@ -13,7 +16,7 @@
         echo "<h1>Results</h1>";
         echo "<p>Host name: " . $host . "</p>";
         echo "<p>IP Address: " . $ipAddress . "</p>";
-        echo "<p>Server type: " . $server . "</p>";
+        echo "<p>Connection type: " . $server . "</p>";
     }
 ?>
 <html>
@@ -30,6 +33,7 @@
     <link rel="stylesheet" href="./style.css">
     </head>
     <body>
+        <input type="button" value="Go back" name="goBackButton" class="btn" onclick="history.back()">
         <button id="theme-toggle" class="dark-mode-btn">
             Toggle Dark Mode
         </button>
