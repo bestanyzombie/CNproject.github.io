@@ -44,7 +44,7 @@
 
 			<input id="text" type="text" name="user_name"><br><br>
 			<input id="text" type="password" name="password"><br><br>
-
+			
 			<input id="button" type="submit" value="Login"><br><br>
 
 			<a href="signup.php">Signup</a><br><br>
