@@ -22,5 +22,14 @@
 </head>
 <body>
 <h1>User page</h1>
+<p>This is the user page.</p>
+<button id="theme-toggle" class="dark-mode-btn">
+            Toggle Dark Mode
+</button>
+<script>
+        document.getElementById("theme-toggle").addEventListener("click", function() {
+            document.body.classList.toggle("dark-mode");
+        });
+</script>
 </body>
 </html>
