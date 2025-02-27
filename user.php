@@ -23,9 +23,15 @@
     <h1 class="text-2xl font-bold">User Page</h1>
     <p class="mb-4">This is the user page.</p>
 
-    <button id="theme-toggle" class="bg-blue-500 text-white px-4 py-2 rounded">
+    <button id="theme-toggle" class="dark-mode-btn">
         Toggle Dark Mode
     </button>
+    <!-- JavaScript for Dark Mode -->
+    <script>
+        document.getElementById("theme-toggle").addEventListener("click", function() {
+            document.body.classList.toggle("dark-mode");
+        });
+    </script>
 
     <!-- User Info Section -->
     <div id="user-info" class="mt-6 hidden">
