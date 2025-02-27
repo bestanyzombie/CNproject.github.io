@@ -16,9 +16,25 @@ function signoutCookie(name){
   loginCookie(name, null, null);
 }
 
-// <- LOGIN BUTTON + RETURN USER TOKEN -> //
+
+
+// <- LOGIN BUTTON + GET USER TOKEN -> //
 function App() {
-  .
+
+  useEffect(() => {
+    // https://codd.cs.gsu.edu/~hnguyen284/CNproject.github.io/user.php?code=<-USER TOKEN HERE->
+    const queryString = window.location.search;
+    const urlParams = new URLSearchPArams(queryString);
+    const codeParam = urlParams.get("code");
+    console.log(codeParam); // Check user code in console
+
+    if(codeParam && (localStorage.getItem("accessToken") === null)) {
+      function getAccessToken() {
+        // TODO
+      }
+      getAccessToken();
+    }
+  }, []);
 
   function loginWithGithub() {
   window.location.assign("https://github.com/login/oauth/authorize?client_id=Ov23liC4cxEBw5Hgys9Q");
@@ -28,14 +44,19 @@ function App() {
     <div className="App">
       <header className="App-header">
         <button onClick={loginWithGithub}>
-          Login with Github
+          Login with Github // Button
         </button>
       </header>
     </div>
   );
 }
 
-// Testing
+
+// <- GRAB USER DATA -> //
+// TODO
+
+
+// Testing Cookies
 loginCookie('token', 'ExAmPlE_tOkEn', 14);
 
 console.log(document.cookie);
