@@ -43,6 +43,9 @@
     </div>
 
     <script>
+        // Client secret (F@!& it, we're putting it in the frontend)
+        const clientSecret = "deda650761a18e70b5b58b5659f82e77a2f12fc8";
+
         document.addEventListener("DOMContentLoaded", async function () {
             const userInfo = document.getElementById("user-info");
             const userName = document.getElementById("user-name");
