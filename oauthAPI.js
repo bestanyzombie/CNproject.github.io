@@ -8,8 +8,14 @@ function App() {
     const urlParams = new URLSearchParams(queryString);
     const codeParam = urlParams.get("code");
 
-    if (codeParam && !localStorage.getItem("accessToken")) {
+    if (codeParam && !localStorage.getItem("userData")) {
       getAccessToken(codeParam);
+    } else {
+      // Load user data from localStorage if available
+      const storedUser = localStorage.getItem("userData");
+      if (storedUser) {
+        setUserData(JSON.parse(storedUser));
+      }
     }
   }, []);
 
@@ -17,34 +23,30 @@ function App() {
     try {
       const response = await fetch("https://codd.cs.gsu.edu/~hnguyen284/CNproject.github.io/user.php", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ code })
       });
 
       const data = await response.json();
-      if (data.access_token) {
-        localStorage.setItem("accessToken", data.access_token);
-        getUserData(data.access_token);
+      if (data.username) {
+        localStorage.setItem("userData", JSON.stringify(data));
+        setUserData(data);
+      } else {
+        console.error("Failed to retrieve user data:", data.error);
       }
     } catch (error) {
       console.error("Error fetching access token:", error);
     }
   }
 
-  async function getUserData(token) {
-    try {
-      const response = await fetch("https://api.github.com/user", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const userData = await response.json();
-      setUserData(userData);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }
-
   function loginWithGithub() {
     window.location.assign("https://github.com/login/oauth/authorize?client_id=Ov23liC4cxEBw5Hgys9Q&scope=user");
+  }
+
+  function logout() {
+    localStorage.removeItem("userData");
+    setUserData(null);
+    window.location.href = "/";
   }
 
   return (
@@ -54,8 +56,10 @@ function App() {
           <button onClick={loginWithGithub}>Login with GitHub</button>
         ) : (
           <div>
-            <h2>Welcome, {userData.name}</h2>
+            <h2>Welcome, {userData.name || userData.username}</h2>
             <img src={userData.avatar_url} alt="User Avatar" width={100} />
+            <p><strong>GitHub:</strong> <a href={userData.profile_url} target="_blank" rel="noopener noreferrer">{userData.username}</a></p>
+            <button onClick={logout} className="bg-red-500 text-white px-4 py-2 mt-4 rounded">Logout</button>
           </div>
         )}
       </header>
