@@ -1,4 +1,4 @@
-name: Web Application CI/CD
+name: Node.js CI/CD Pipeline
 
 on:
   push:
@@ -7,43 +7,38 @@ on:
     branches: [ main ]
 
 jobs:
-  lint-and-test:
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    # Set up PHP
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.4'  # Choose the PHP version compatible with your project
-
-    # PHP Linting
-    - name: PHP Lint
-      run: find . -name '*.php' ! -path "./vendor/*" -exec php -l {} \;
-
-    # Set up Node.js (if using ESLint)
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'  # Use the Node.js version if you decide to add ESLint
+        node-version: '22'  # Updated to match your local Node.js version
 
-    # Install Node dependencies (if using ESLint)
-    - name: Install Node dependencies
+    - name: Install dependencies
       run: npm install
 
-    # JavaScript Linting (if using ESLint)
-    - name: Lint JavaScript files
-      run: npx eslint *.js
+    - name: Run tests
+      run: npm test
 
   deploy:
-    needs: lint-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only runs on direct pushes to main
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22'  # Keep consistency across environments
+
+    - name: Install dependencies
+      run: npm install
 
     - name: Deploy to Server
       uses: appleboy/ssh-action@master
@@ -52,6 +47,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          # Your deployment script here
-          echo "Deploying to server..."
-          # Add your specific deployment commands here
+          cd /path/to/your/project/on/server
+          git pull
+          npm install --production
+          pm2 restart all  # Adjust this to fit your deployment process
