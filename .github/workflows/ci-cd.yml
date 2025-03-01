@@ -37,6 +37,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          cd /path/to/your/project/on/server
+          /home/jzheng18/CNproject.github.io-main
           git pull
           php artisan cache:clear  # Example for Laravel, remove if not needed
