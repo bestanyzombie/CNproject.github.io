@@ -1,4 +1,4 @@
-name: Node.js CI/CD Pipeline
+name: Web Application CI/CD
 
 on:
   push:
@@ -7,50 +7,43 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  lint-and-test:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
+    # Set up PHP
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'  # Choose the PHP version compatible with your project
+
+    # PHP Linting
+    - name: PHP Lint
+      run: find . -name '*.php' ! -path "./vendor/*" -exec php -l {} \;
+
+    # Set up Node.js (if using ESLint)
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'  # Specify the Node.js version you need
+        node-version: '14'  # Use the Node.js version if you decide to add ESLint
 
-    # Ensure this step reflects the correct path to your Node.js project if not in the repository root
-    - name: Change to the project directory
-      run: cd path/to/your/project  # Adjust this line to the correct subdirectory where package.json is located
-
-    - name: Install dependencies
+    # Install Node dependencies (if using ESLint)
+    - name: Install Node dependencies
       run: npm install
 
-    - name: Run tests
-      run: npm test
-
-    - name: Build
-      run: npm run build
+    # JavaScript Linting (if using ESLint)
+    - name: Lint JavaScript files
+      run: npx eslint *.js
 
   deploy:
+    needs: lint-and-test
     runs-on: ubuntu-latest
-    needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
     - uses: actions/checkout@v2
-
-    # Ensure Node.js setup is repeated for deployment in case of separate job
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    # Repeat the directory change if necessary for deployment
-    - name: Change to the project directory
-      run: cd path/to/your/project  # Ensure this matches the directory used above
-
-    - name: Install dependencies
-      run: npm install
 
     - name: Deploy to Server
       uses: appleboy/ssh-action@master
@@ -59,5 +52,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          cd /path/to/your/project  # Ensure this matches the directory used above
-          npm run deploy
+          # Your deployment script here
+          echo "Deploying to server..."
+          # Add your specific deployment commands here
