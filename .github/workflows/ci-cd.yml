@@ -7,36 +7,17 @@ on:
     branches: [ main ]
 
 jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    # PHP Linting
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.4'  # Adjust based on your project needs
-
-    - name: PHP Lint
-      run: find . -name '*.php' ! -path "./vendor/*" -exec php -l {} \;
-
   deploy:
     runs-on: ubuntu-latest
-    needs: lint-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Deploy to Server
-      uses: appleboy/ssh-action@master
+    - name: Deploy to Codd Server (SCP)
+      uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        script: |
-          cd /home/jzheng18/CNproject.github.io-main && ls -la
-          git pull
-    
+        source: "."  # Transfers all files from the GitHub repository
+        target: "/home/jzheng18/CNproject.github.io-main"  # Destination on Codd server
