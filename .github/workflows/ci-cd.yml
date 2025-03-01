@@ -16,7 +16,11 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14' # Specify the Node.js version you need
+        node-version: '14'  # Specify the Node.js version you need
+
+    # Ensure this step reflects the correct path to your Node.js project if not in the repository root
+    - name: Change to the project directory
+      run: cd path/to/your/project  # Adjust this line to the correct subdirectory where package.json is located
 
     - name: Install dependencies
       run: npm install
@@ -35,10 +39,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # Ensure Node.js setup is repeated for deployment in case of separate job
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'
+
+    # Repeat the directory change if necessary for deployment
+    - name: Change to the project directory
+      run: cd path/to/your/project  # Ensure this matches the directory used above
 
     - name: Install dependencies
       run: npm install
@@ -50,5 +59,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          cd /path/to/your/project
+          cd /path/to/your/project  # Ensure this matches the directory used above
           npm run deploy
